@@ -21,17 +21,22 @@ from datetime import datetime
 import math
 import matplotlib.pyplot as plt
 
+"""define the square area (300x300)m^2 where we randomly place the number of users on the ground"""
 x_max =300
 y_max =300
+"""height of UAVs in meter"""
 H=150
+"""radius grounded communication range of a UAV in meter"""
 R=200
+"""number of UAVs """
 n_uavs = 2
+"""number of users"""
 n_ues = 12
-#generate 4ues in area (10mx10m)
+"""generate users's 2 dimensional positions in the target square area """
 ue_pos = [random.randint(0, x_max) for i in range(2*n_ues)]
-#ue_pos=[4, 1, 0, 1, 2, 2, 4, 4]
-#ue_pos = [3,3,2,1,4,4,3,2]
+"""the maximum distance between UAV and user in UAV's coverage"""
 Com_range = np.sqrt(H**2+R**2)
+"""UAV can take an movement action which includes a distance of 10 meters and in 4 directions: up, down, left and right""" 
 step_resolution = 10
 actions_1uav = [(0,step_resolution),(step_resolution,0),(0,-step_resolution),(-step_resolution,0),(0,0)]
 actions_space =[]
@@ -83,12 +88,12 @@ def epsilon_greedy(action,step):
     else:
         return action[0]
 
-#define replay buffer with length 20000 to hold the experience 
+"""define replay buffer with length 20000 to hold the experience""" 
 buffer_len = 2000
 exp_buffer = deque(maxlen=buffer_len)
 
 
-#define function to sample the experiences from the memory
+"""define function to sample the experiences from the memory"""
 def sample_memories(batch_size):
     perm_batch = np.random.permutation(len(exp_buffer))[:batch_size]
     mem = np.array(exp_buffer)[perm_batch]
@@ -115,18 +120,6 @@ def func_rewards_for_user(max_dis,dis_uav_ue):
     else:
         r=1+len(dis_)*1.5
     return r
-        
-
-def func_rewards_num_users(max_dis,dis_uav_ue):
-    dis_ = [i for i in dis_uav_ue if i<=max_dis]
-    if len(dis_)==0:
-        r=0
-    elif len(dis_)==1:
-        r=1
-    else:
-        r=1+len(dis_)*1.5
-    return r
-
 
 #define network hyperparameters
 num_episodes = 800
@@ -142,7 +135,7 @@ steps_train = 4
 start_steps = 2000
 max_steps = 1000
 
-#tf.reset_default_graph()
+
 #define placeholder for input
 X = tf.placeholder(tf.float32, shape = X_shape)
 
