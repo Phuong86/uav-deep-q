@@ -1,18 +1,22 @@
 clear all;
 close all;
 clc;
-
+#number of UAVs
 U = 9;
+#number of users
 K = 12;
+#generate the small scale channels between UAVs and users, UAVs and Macro base station (MBS)
 generate_channel_rician(U,K);
-load('parameter_9_12.mat');
+#load('parameter_9_12.mat');
 %N0 = 1e-10;
-%generate_ue(K);
+#generate users positions
+generate_ue(K);
 %load('parameter_ue_location_12.mat');
-%generate_ue(K);
-load('parameter_ue_location_12_200m.mat');
+#heights of a UAV
 H = 150;
+#height of MBS
 Hb = 30; 
+#communication range of a UAV
 Range = 200;
 eta = 5;
 sigma02=1;
@@ -29,13 +33,14 @@ for i=1:U
     coor_uav(i,1)=200*rand(1);
     coor_uav(i,2) = 200*rand(1);
 end
-
+#distance between UAVs and users
 delta=zeros(U,K);
 for i=1:U
     for k=1:K
         delta(i,k)=((coor_uav(i,1)-coor_ue(k,1))^2+(coor_uav(i,2)-coor_ue(k,2))^2+H^2)^(-1/2);
     end
 end
+#distance between UAVs and MBS
 deltab=zeros(U,1);
 for i=1:U
     deltab(i)=((0-coor_uav(i,1))^2+(0-coor_uav(i,2))^2+(H-Hb)^2)^(-1/2);
